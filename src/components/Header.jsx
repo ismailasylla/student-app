@@ -14,11 +14,14 @@ const Header = () => {
     navigate("/");
   };
   return (
-    <header className="header">
-      <div className="">
+    <header
+      className="header"
+      style={{ display: "flex", justifyContent: "flex-end", margin: "20px" }}
+    >
+      {/* <div className="">
         <Link to="/">Dashboard</Link>
-      </div>
-      <ul>
+      </div> */}
+      <ul style={{ listStyle: "none" }}>
         {user ? (
           <li>
             <button className="btn" onClick={onLogout}>
