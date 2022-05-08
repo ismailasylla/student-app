@@ -1,5 +1,9 @@
-import { useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Button, Form, Spinner } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { login, reset } from "../features/auth/authSlice";
 
 const Login = () => {
   const [studentData, setStudentData] = useState({
@@ -7,6 +11,25 @@ const Login = () => {
   });
 
   const { name } = studentData;
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
+
+  useEffect(() => {
+    if (isError) {
+      toast.error(message);
+    }
+
+    if (isSuccess || user) {
+      navigate("/");
+    }
+
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, navigate, dispatch]);
 
   const onChange = (e) => {
     setStudentData((prevState) => ({
@@ -17,7 +40,17 @@ const Login = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+
+    const userData = {
+      name,
+    };
+
+    dispatch(login(userData));
   };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <div className="container">
@@ -26,7 +59,7 @@ const Login = () => {
           <Form.Label>Search Student</Form.Label>
           <Form.Control
             type="text"
-            id="name"
+            // id="name"
             placeholder="Enter Student Name"
             onChange={onChange}
             value={name}
